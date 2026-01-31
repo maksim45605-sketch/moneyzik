@@ -2,142 +2,567 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Мои деньги</title>
   <style>
-    body{
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0;
-      padding: 24px;
-      background: #0b0f19;
-      color: #fff;
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
-    }
-    .card{
-      width: min(700px, 92vw);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-    h1{ margin: 0 0 12px; font-size: 22px; font-weight: 700; }
-    .amount{
-      font-size: 44px;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-      margin: 8px 0 18px;
+    :root{
+      --bg1:#070A14;
+      --bg2:#0B1430;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+
+      --g1a:#22c55e; --g1b:#a3e635;
+      --g2a:#60a5fa; --g2b:#a78bfa;
+      --g3a:#fb7185; --g3b:#f59e0b;
+
+      --danger:#ef4444;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
     }
 
-    /* горизонтальная шкала */
-    .bar{
-      height: 18px;
-      background: rgba(255,255,255,0.10);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.12);
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(1100px 600px at 20% 15%, rgba(99,102,241,.18), transparent 55%),
+        radial-gradient(900px 560px at 80% 20%, rgba(34,197,94,.14), transparent 55%),
+        radial-gradient(1200px 800px at 50% 90%, rgba(249,115,22,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
     }
-    .fill{
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #22c55e, #a3e635);
+
+    /* subtle moving sparkle */
+    .sparkle{
+      position:fixed; inset:-30%;
+      background:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.25), transparent 60%),
+        radial-gradient(2px 2px at 30% 70%, rgba(255,255,255,.18), transparent 60%),
+        radial-gradient(2px 2px at 60% 40%, rgba(255,255,255,.16), transparent 60%),
+        radial-gradient(2px 2px at 85% 80%, rgba(255,255,255,.20), transparent 60%);
+      filter: blur(.2px);
+      animation: drift 18s linear infinite;
+      pointer-events:none;
+      opacity:.55;
+    }
+    @keyframes drift{
+      0%{transform:translate3d(-1.5%, -1.5%, 0) rotate(0deg)}
+      100%{transform:translate3d(1.5%, 1.5%, 0) rotate(6deg)}
+    }
+
+    .wrap{
+      width:min(820px, 92vw);
+      padding: 18px;
+    }
+
+    .card{
+      position:relative;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(600px 220px at 20% 0%, rgba(34,197,94,.18), transparent 55%),
+        radial-gradient(520px 220px at 80% 0%, rgba(168,85,247,.18), transparent 60%),
+        radial-gradient(760px 360px at 50% 110%, rgba(59,130,246,.14), transparent 55%);
+      opacity:.9;
+      z-index:0;
+      pointer-events:none;
+    }
+    .card > *{ position:relative; z-index:1; }
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap: 4px;
+    }
+    .title h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+      opacity:.95;
+    }
+    .subtitle{
+      margin:0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .amount{
+      margin: 10px 0 12px;
+      display:flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .amount .num{
+      font-size: 56px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      line-height: 1;
+      text-shadow: 0 6px 24px rgba(0,0,0,.35);
+      transform-origin:left center;
+      animation: popIn .55s cubic-bezier(.2,.9,.1,1.1) both;
+    }
+    .amount .rub{
+      font-size: 20px;
+      font-weight: 800;
+      opacity:.9;
+    }
+    .badge{
+      margin-left:auto;
+      font-size: 12px;
+      padding: 6px 10px;
       border-radius: 999px;
-      transition: width 280ms ease;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.88);
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.08);
+    }
+    .danger .dot{
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(239,68,68,.14), 0 0 16px rgba(239,68,68,.35);
+      animation: pulse 1.1s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{ transform:scale(1); filter:brightness(1); }
+      50%{ transform:scale(1.12); filter:brightness(1.15); }
+    }
+
+    @keyframes popIn{
+      0%{ transform: translateY(10px) scale(.96); opacity: 0; filter: blur(4px); }
+      100%{ transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+    }
+
+    /* progress section */
+    .sections{
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .section{
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      border-radius: 14px;
+      padding: 12px 12px 10px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .section.hidden{
+      display:none;
+    }
+
+    .section.reveal{
+      animation: reveal .55s cubic-bezier(.2,.9,.2,1) both;
+    }
+    @keyframes reveal{
+      0%{ opacity:0; transform: translateY(10px); filter: blur(6px); }
+      100%{ opacity:1; transform: translateY(0); filter: blur(0); }
+    }
+
+    .sectionHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .label{
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing:.2px;
+      opacity:.92;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .chip{
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.78);
+      background: rgba(255,255,255,.06);
     }
 
     .scale{
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      opacity: 0.85;
+      font-size: 12px;
+      color: var(--muted);
+      display:flex;
+      justify-content:space-between;
       margin-top: 8px;
+      letter-spacing:.2px;
     }
 
-    .controls{
-      display: grid;
-      grid-template-columns: 1fr auto;
+    .bar{
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* moving shine */
+    .bar::after{
+      content:"";
+      position:absolute;
+      top:-30%;
+      left:-30%;
+      width: 40%;
+      height: 160%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.20), transparent);
+      transform: rotate(18deg);
+      opacity:.55;
+      animation: shine 2.4s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes shine{
+      0%{ transform: translateX(-120%) rotate(18deg); opacity:.0; }
+      20%{ opacity:.55; }
+      55%{ opacity:.55; }
+      100%{ transform: translateX(320%) rotate(18deg); opacity:0; }
+    }
+
+    .fill{
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transform: translateZ(0);
+      transition: width 700ms cubic-bezier(.2,.9,.15,1);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.10) inset;
+    }
+    .fill::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(120px 18px at 20% 50%, rgba(255,255,255,.22), transparent 60%);
+      opacity:.35;
+      pointer-events:none;
+    }
+
+    .theme1 .fill{
+      background: linear-gradient(90deg, var(--g1a), var(--g1b));
+      box-shadow: 0 0 18px rgba(34,197,94,.18);
+    }
+    .theme2 .fill{
+      background: linear-gradient(90deg, var(--g2a), var(--g2b));
+      box-shadow: 0 0 18px rgba(96,165,250,.18);
+    }
+    .theme3 .fill{
+      background: linear-gradient(90deg, var(--g3a), var(--g3b));
+      box-shadow: 0 0 18px rgba(251,113,133,.18);
+    }
+
+    .over{
+      border-color: rgba(239,68,68,.28);
+      box-shadow: 0 0 0 1px rgba(239,68,68,.14) inset, 0 0 26px rgba(239,68,68,.10);
+    }
+    .over .fill{
+      background: linear-gradient(90deg, #fb7185, #ef4444, #f59e0b);
+      animation: dangerFlow 1.2s linear infinite;
+      box-shadow: 0 0 22px rgba(239,68,68,.20);
+    }
+    @keyframes dangerFlow{
+      0%{ filter:hue-rotate(0deg) saturate(1.1); }
+      100%{ filter:hue-rotate(22deg) saturate(1.2); }
+    }
+
+    /* Like */
+    .likeBox{
+      display:flex;
+      align-items:center;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.10);
     }
-    input{
-      padding: 12px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.25);
-      color: #fff;
-      outline: none;
-      font-size: 16px;
+    .likeBtn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      transition: transform .15s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
     }
-    button{
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 0;
-      background: #3b82f6;
-      color: #fff;
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
+    .likeBtn:hover{ background: rgba(255,255,255,.10); transform: translateY(-1px); }
+    .likeBtn:active{ transform: translateY(0px) scale(.98); }
+
+    .heart{
+      width: 18px; height: 18px;
+      display:block;
+      transform-origin:center;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,.35));
     }
-    button:hover{ filter: brightness(1.05); }
-    .hint{ margin-top: 10px; font-size: 13px; opacity: 0.75; line-height: 1.35; }
+    .likeBtn.liked{
+      border-color: rgba(251,113,133,.45);
+      background: rgba(251,113,133,.12);
+    }
+    .likeBtn.liked .heart{
+      animation: heartPop .42s cubic-bezier(.2,1,.2,1) both;
+    }
+    @keyframes heartPop{
+      0%{ transform: scale(.6); }
+      55%{ transform: scale(1.25) rotate(-8deg); }
+      100%{ transform: scale(1) rotate(0deg); }
+    }
+    .likeText{
+      font-size: 13px;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Сколько у меня денег</h1>
-    <div class="amount"><span id="moneyText">0</span> ₽</div>
+  <div class="sparkle" aria-hidden="true"></div>
 
-    <div class="bar" aria-label="Шкала денег от 0 до 1000 рублей">
-      <div class="fill" id="fill"></div>
-    </div>
-    <div class="scale">
-      <span>0 ₽</span>
-      <span>1000 ₽</span>
-    </div>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="title">
+          <h1>Сколько у меня денег</h1>
+          <p class="subtitle">Шкала автоматически расширяется, если сумма больше лимита</p>
+        </div>
 
-    <div class="controls">
-      <input id="moneyInput" type="number" min="0" max="1000" placeholder="Введи сумму (0–1000)" />
-      <button id="applyBtn">Обновить</button>
-    </div>
+        <div id="statusBadge" class="badge">
+          <span class="dot"></span>
+          <span id="statusText">в пределах 0–1000 ₽</span>
+        </div>
+      </div>
 
-    <div class="hint">
-      Можно вводить число и жать “Обновить”.<br/>
-      Или в консоли браузера вызвать: <code>setMoney(350)</code>
+      <div class="amount">
+        <div class="num" id="moneyNum">0</div>
+        <div class="rub">₽</div>
+      </div>
+
+      <div class="sections">
+        <!-- 0..1000 -->
+        <div class="section theme1" id="s1">
+          <div class="sectionHead">
+            <div class="label">Линия 1 <span class="chip">0 → 1000 ₽</span></div>
+            <div class="chip" id="s1chip">0 / 1000</div>
+          </div>
+          <div class="bar" id="s1bar">
+            <div class="fill" id="s1fill"></div>
+          </div>
+          <div class="scale"><span>0 ₽</span><span>1000 ₽</span></div>
+        </div>
+
+        <!-- 1000..5000 -->
+        <div class="section theme2 hidden" id="s2">
+          <div class="sectionHead">
+            <div class="label">Линия 2 <span class="chip">1000 → 5000 ₽</span></div>
+            <div class="chip" id="s2chip">1000 / 5000</div>
+          </div>
+          <div class="bar" id="s2bar">
+            <div class="fill" id="s2fill"></div>
+          </div>
+          <div class="scale"><span>1000 ₽</span><span>5000 ₽</span></div>
+        </div>
+
+        <!-- 5000..10000 -->
+        <div class="section theme3 hidden" id="s3">
+          <div class="sectionHead">
+            <div class="label">Линия 3 <span class="chip">5000 → 10000 ₽</span></div>
+            <div class="chip" id="s3chip">5000 / 10000</div>
+          </div>
+          <div class="bar" id="s3bar">
+            <div class="fill" id="s3fill"></div>
+          </div>
+          <div class="scale"><span>5000 ₽</span><span>10000 ₽</span></div>
+        </div>
+      </div>
+
+      <div class="likeBox">
+        <button class="likeBtn" id="likeBtn" type="button" aria-pressed="false" title="Поставить сердечко">
+          <svg class="heart" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path id="heartPath"
+              d="M12 21s-7.2-4.4-9.6-8.7C.7 9.1 2.2 5.9 5.5 5.1c1.8-.5 3.8.2 5 1.7 1.2-1.5 3.2-2.2 5-1.7 3.3.8 4.8 4 3.1 7.2C19.2 16.6 12 21 12 21z"
+              stroke="rgba(255,255,255,.9)" stroke-width="1.8" />
+          </svg>
+          <span id="likeLabel">Сердечко</span>
+          <span class="chip" id="likeCount">0</span>
+        </button>
+        <div class="likeText">Если нравится — жми 💖 (сохраняется в этом браузере)</div>
+      </div>
     </div>
   </div>
 
   <script>
-    const MAX = 1000;
+    /************************************************************
+     *  НАСТРОЙКА СУММЫ
+     *  Меняй число ниже и просто обновляй страницу.
+     ************************************************************/
+    const MONEY = 10; // <-- ТВОЯ СУММА (рублей)
 
-    const moneyText = document.getElementById('moneyText');
-    const fill = document.getElementById('fill');
-    const input = document.getElementById('moneyInput');
-    const btn = document.getElementById('applyBtn');
+    // Диапазоны:
+    const R1 = { min: 0,    max: 1000 };
+    const R2 = { min: 1000, max: 5000 };
+    const R3 = { min: 5000, max: 10000 };
 
-    function clamp(n, min, max){ return Math.min(max, Math.max(min, n)); }
+    const el = (id) => document.getElementById(id);
 
-    function setMoney(value){
-      const v = clamp(Number(value || 0), 0, MAX);
-      moneyText.textContent = v.toString();
-      fill.style.width = (v / MAX * 100).toFixed(1) + '%';
-      input.value = v;
+    const moneyNum = el('moneyNum');
+    const statusBadge = el('statusBadge');
+    const statusText  = el('statusText');
+
+    const s1 = el('s1'); const s1fill = el('s1fill'); const s1chip = el('s1chip'); const s1bar = el('s1bar');
+    const s2 = el('s2'); const s2fill = el('s2fill'); const s2chip = el('s2chip'); const s2bar = el('s2bar');
+    const s3 = el('s3'); const s3fill = el('s3fill'); const s3chip = el('s3chip'); const s3bar = el('s3bar');
+
+    function clamp(n, a, b){ return Math.min(b, Math.max(a, n)); }
+    function pct(value, min, max){
+      if (max === min) return 0;
+      return (clamp(value, min, max) - min) / (max - min) * 100;
     }
 
-    // кнопка
-    btn.addEventListener('click', () => setMoney(input.value));
+    function formatInt(n){
+      const x = Math.round(n);
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
 
-    // Enter
-    input.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') setMoney(input.value);
+    function revealSection(section){
+      if (!section.classList.contains('hidden')) return;
+      section.classList.remove('hidden');
+      section.classList.add('reveal');
+      setTimeout(() => section.classList.remove('reveal'), 700);
+    }
+
+    // number animation
+    function animateNumber(to){
+      const from = 0;
+      const duration = 900;
+      const start = performance.now();
+      function tick(t){
+        const p = clamp((t - start) / duration, 0, 1);
+        // easeOutCubic
+        const e = 1 - Math.pow(1 - p, 3);
+        const v = from + (to - from) * e;
+        moneyNum.textContent = formatInt(v);
+        if (p < 1) requestAnimationFrame(tick);
+        else moneyNum.textContent = formatInt(to);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function updateBars(m){
+      // Always show line 1
+      const p1 = pct(m, R1.min, R1.max);
+      s1fill.style.width = p1.toFixed(1) + '%';
+      s1chip.textContent = `${formatInt(clamp(m, R1.min, R1.max))} / ${formatInt(R1.max)}`;
+      s1bar.classList.toggle('over', m > R1.max);
+
+      // Show line 2 only if > 1000
+      if (m > R1.max){
+        revealSection(s2);
+        const p2 = pct(m, R2.min, R2.max);
+        s2fill.style.width = p2.toFixed(1) + '%';
+        s2chip.textContent = `${formatInt(clamp(m, R2.min, R2.max))} / ${formatInt(R2.max)}`;
+        s2bar.classList.toggle('over', m > R2.max);
+      }
+
+      // Show line 3 only if > 5000
+      if (m > R2.max){
+        revealSection(s3);
+        const p3 = pct(m, R3.min, R3.max);
+        s3fill.style.width = p3.toFixed(1) + '%';
+        s3chip.textContent = `${formatInt(clamp(m, R3.min, R3.max))} / ${formatInt(R3.max)}`;
+        s3bar.classList.toggle('over', m > R3.max);
+      }
+
+      // Status badge
+      statusBadge.classList.remove('danger');
+      let text = 'в пределах 0–1000 ₽';
+      if (m > R1.max && m <= R2.max) text = 'выше 1000 ₽ — включилась линия 2';
+      if (m > R2.max && m <= R3.max) text = 'выше 5000 ₽ — включилась линия 3';
+      if (m > R3.max){
+        text = 'превышение 10 000 ₽';
+        statusBadge.classList.add('danger');
+      }
+      statusText.textContent = text;
+    }
+
+    // Like (сердечко) with localStorage
+    const likeBtn = el('likeBtn');
+    const likeCountEl = el('likeCount');
+
+    const KEY_LIKED = 'money_site_liked_v1';
+    const KEY_COUNT = 'money_site_like_count_v1';
+
+    function loadLikes(){
+      const liked = localStorage.getItem(KEY_LIKED) === '1';
+      const count = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
+      applyLikeState(liked, isNaN(count) ? 0 : count);
+    }
+
+    function applyLikeState(liked, count){
+      likeBtn.classList.toggle('liked', liked);
+      likeBtn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+      // fill heart when liked
+      const heartPath = document.getElementById('heartPath');
+      heartPath.setAttribute('fill', liked ? 'rgba(251,113,133,.85)' : 'rgba(255,255,255,.00)');
+      likeCountEl.textContent = formatInt(count);
+    }
+
+    likeBtn.addEventListener('click', () => {
+      const likedNow = !(localStorage.getItem(KEY_LIKED) === '1');
+      let count = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
+      if (isNaN(count)) count = 0;
+
+      // toggle: if like -> +1, if unlike -> -1 (not below 0)
+      if (likedNow) count += 1;
+      else count = Math.max(0, count - 1);
+
+      localStorage.setItem(KEY_LIKED, likedNow ? '1' : '0');
+      localStorage.setItem(KEY_COUNT, String(count));
+
+      applyLikeState(likedNow, count);
     });
 
-    // стартовое значение (можешь поменять тут)
-    setMoney(10);
-
-    // чтобы было доступно из консоли
-    window.setMoney = setMoney;
+    // Init
+    (function init(){
+      const m = Math.max(0, Number(MONEY) || 0);
+      animateNumber(m);
+      // delay bars a bit for cinematic feel
+      setTimeout(() => updateBars(m), 120);
+      loadLikes();
+    })();
   </script>
 </body>
 </html>
