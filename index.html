@@ -38,7 +38,6 @@
       overflow-x:hidden;
     }
 
-    /* subtle moving sparkle */
     .sparkle{
       position:fixed; inset:-30%;
       background:
@@ -57,7 +56,7 @@
     }
 
     .wrap{
-      width:min(820px, 92vw);
+      width:min(860px, 92vw);
       padding: 18px;
     }
 
@@ -162,7 +161,6 @@
       100%{ transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
     }
 
-    /* progress section */
     .sections{
       display:flex;
       flex-direction:column;
@@ -179,9 +177,7 @@
       position:relative;
     }
 
-    .section.hidden{
-      display:none;
-    }
+    .section.hidden{ display:none; }
 
     .section.reveal{
       animation: reveal .55s cubic-bezier(.2,.9,.2,1) both;
@@ -234,7 +230,6 @@
       position:relative;
     }
 
-    /* moving shine */
     .bar::after{
       content:"";
       position:absolute;
@@ -262,6 +257,7 @@
       transform: translateZ(0);
       transition: width 700ms cubic-bezier(.2,.9,.15,1);
       box-shadow: 0 0 0 1px rgba(255,255,255,.10) inset;
+      position:relative;
     }
     .fill::before{
       content:"";
@@ -299,6 +295,144 @@
       100%{ filter:hue-rotate(22deg) saturate(1.2); }
     }
 
+    /* Payment card block */
+    .payBox{
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+    .payCard{
+      flex: 1 1 420px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(600px 200px at 10% 0%, rgba(96,165,250,.16), transparent 55%),
+        radial-gradient(520px 220px at 90% 10%, rgba(251,113,133,.14), transparent 60%),
+        rgba(0,0,0,.18);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      padding: 14px 14px 12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .payCard::after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: conic-gradient(from 180deg, rgba(255,255,255,.00), rgba(255,255,255,.10), rgba(255,255,255,.00));
+      animation: rotateGlow 10s linear infinite;
+      opacity:.55;
+      pointer-events:none;
+    }
+    @keyframes rotateGlow{
+      0%{ transform: rotate(0deg); }
+      100%{ transform: rotate(360deg); }
+    }
+    .payCardInner{ position:relative; z-index:1; }
+
+    .payTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .payTitle{
+      font-weight: 900;
+      letter-spacing: .25px;
+      font-size: 13px;
+      opacity: .92;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .payIcon{
+      width: 28px; height: 28px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      display:grid;
+      place-items:center;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
+
+    .cardNumber{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 20px;
+      letter-spacing: 2px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      user-select: text;
+      white-space: nowrap;
+      overflow-x:auto;
+    }
+    .copyBtn{
+      flex: 0 0 auto;
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.92);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      transition: transform .15s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .copyBtn:hover{ background: rgba(255,255,255,.12); transform: translateY(-1px); }
+    .copyBtn:active{ transform: translateY(0) scale(.98); }
+
+    .copyMini{
+      width: 18px; height: 18px;
+      display:block;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,.25));
+    }
+
+    .copyHint{
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events:none;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.55);
+      color: rgba(255,255,255,.92);
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+      backdrop-filter: blur(8px);
+      transition: opacity .25s ease, transform .25s ease;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: .2px;
+      z-index: 9999;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* Like */
     .likeBox{
       display:flex;
@@ -307,6 +441,7 @@
       margin-top: 14px;
       padding-top: 12px;
       border-top: 1px solid rgba(255,255,255,.10);
+      flex-wrap: wrap;
     }
     .likeBtn{
       appearance:none;
@@ -346,18 +481,32 @@
     .likeText{
       font-size: 13px;
       color: var(--muted);
+      line-height:1.35;
+    }
+
+    /* Copy button success micro-anim */
+    .copyBtn.ok{
+      border-color: rgba(34,197,94,.45);
+      background: rgba(34,197,94,.12);
+      animation: okPop .35s cubic-bezier(.2,1,.2,1) both;
+    }
+    @keyframes okPop{
+      0%{ transform: scale(.98); }
+      60%{ transform: scale(1.03); }
+      100%{ transform: scale(1); }
     }
   </style>
 </head>
 <body>
   <div class="sparkle" aria-hidden="true"></div>
+  <div class="toast" id="toast">Скопировано ✅</div>
 
   <div class="wrap">
     <div class="card">
       <div class="top">
         <div class="title">
           <h1>Сколько у меня денег</h1>
-          <p class="subtitle">Здесь сколько у меня щас денег</p>
+          <p class="subtitle">Шкала автоматически расширяется, если сумма больше лимита</p>
         </div>
 
         <div id="statusBadge" class="badge">
@@ -409,6 +558,36 @@
         </div>
       </div>
 
+      <!-- Карта + копирование -->
+      <div class="payBox">
+        <div class="payCard">
+          <div class="payCardInner">
+            <div class="payTop">
+              <div class="payTitle">
+                <span class="payIcon" aria-hidden="true">💳</span>
+                Карта для перевода
+              </div>
+              <span class="chip">tap to copy</span>
+            </div>
+
+            <div class="cardNumber" id="cardNumberBox" title="Нажми, чтобы скопировать">
+              <span id="cardNumberText">0000 0000 0000 0000</span>
+              <button class="copyBtn" id="copyBtn" type="button">
+                <svg class="copyMini" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 9h10v10H9V9Z" stroke="rgba(255,255,255,.92)" stroke-width="1.8" />
+                  <path d="M5 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2" stroke="rgba(255,255,255,.72)" stroke-width="1.8"/>
+                </svg>
+                Скопировать
+              </button>
+            </div>
+
+            <div class="copyHint">
+              Номер копируется в буфер обмена. Если сайт будет публичным — лучше показывать только последние 4 цифры.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="likeBox">
         <button class="likeBtn" id="likeBtn" type="button" aria-pressed="false" title="Поставить сердечко">
           <svg class="heart" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -426,10 +605,12 @@
 
   <script>
     /************************************************************
-     *  НАСТРОЙКА СУММЫ
-     *  Меняй число ниже и просто обновляй страницу.
+     *  НАСТРОЙКА СУММЫ И КАРТЫ
      ************************************************************/
     const MONEY = 10; // <-- ТВОЯ СУММА (рублей)
+
+    // Номер карты (как ты написал)
+    const CARD_NUMBER = "2203 8302 3366 5471";
 
     // Диапазоны:
     const R1 = { min: 0,    max: 1000 };
@@ -442,9 +623,11 @@
     const statusBadge = el('statusBadge');
     const statusText  = el('statusText');
 
-    const s1 = el('s1'); const s1fill = el('s1fill'); const s1chip = el('s1chip'); const s1bar = el('s1bar');
+    const s1fill = el('s1fill'); const s1chip = el('s1chip'); const s1bar = el('s1bar');
     const s2 = el('s2'); const s2fill = el('s2fill'); const s2chip = el('s2chip'); const s2bar = el('s2bar');
     const s3 = el('s3'); const s3fill = el('s3fill'); const s3chip = el('s3chip'); const s3bar = el('s3bar');
+
+    const toast = el('toast');
 
     function clamp(n, a, b){ return Math.min(b, Math.max(a, n)); }
     function pct(value, min, max){
@@ -464,15 +647,13 @@
       setTimeout(() => section.classList.remove('reveal'), 700);
     }
 
-    // number animation
     function animateNumber(to){
       const from = 0;
       const duration = 900;
       const start = performance.now();
       function tick(t){
         const p = clamp((t - start) / duration, 0, 1);
-        // easeOutCubic
-        const e = 1 - Math.pow(1 - p, 3);
+        const e = 1 - Math.pow(1 - p, 3); // easeOutCubic
         const v = from + (to - from) * e;
         moneyNum.textContent = formatInt(v);
         if (p < 1) requestAnimationFrame(tick);
@@ -482,13 +663,11 @@
     }
 
     function updateBars(m){
-      // Always show line 1
       const p1 = pct(m, R1.min, R1.max);
       s1fill.style.width = p1.toFixed(1) + '%';
       s1chip.textContent = `${formatInt(clamp(m, R1.min, R1.max))} / ${formatInt(R1.max)}`;
       s1bar.classList.toggle('over', m > R1.max);
 
-      // Show line 2 only if > 1000
       if (m > R1.max){
         revealSection(s2);
         const p2 = pct(m, R2.min, R2.max);
@@ -497,7 +676,6 @@
         s2bar.classList.toggle('over', m > R2.max);
       }
 
-      // Show line 3 only if > 5000
       if (m > R2.max){
         revealSection(s3);
         const p3 = pct(m, R3.min, R3.max);
@@ -506,7 +684,6 @@
         s3bar.classList.toggle('over', m > R3.max);
       }
 
-      // Status badge
       statusBadge.classList.remove('danger');
       let text = 'в пределах 0–1000 ₽';
       if (m > R1.max && m <= R2.max) text = 'выше 1000 ₽ — включилась линия 2';
@@ -525,19 +702,18 @@
     const KEY_LIKED = 'money_site_liked_v1';
     const KEY_COUNT = 'money_site_like_count_v1';
 
+    function applyLikeState(liked, count){
+      likeBtn.classList.toggle('liked', liked);
+      likeBtn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+      const heartPath = document.getElementById('heartPath');
+      heartPath.setAttribute('fill', liked ? 'rgba(251,113,133,.85)' : 'rgba(255,255,255,.00)');
+      likeCountEl.textContent = formatInt(count);
+    }
+
     function loadLikes(){
       const liked = localStorage.getItem(KEY_LIKED) === '1';
       const count = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
       applyLikeState(liked, isNaN(count) ? 0 : count);
-    }
-
-    function applyLikeState(liked, count){
-      likeBtn.classList.toggle('liked', liked);
-      likeBtn.setAttribute('aria-pressed', liked ? 'true' : 'false');
-      // fill heart when liked
-      const heartPath = document.getElementById('heartPath');
-      heartPath.setAttribute('fill', liked ? 'rgba(251,113,133,.85)' : 'rgba(255,255,255,.00)');
-      likeCountEl.textContent = formatInt(count);
     }
 
     likeBtn.addEventListener('click', () => {
@@ -545,21 +721,70 @@
       let count = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
       if (isNaN(count)) count = 0;
 
-      // toggle: if like -> +1, if unlike -> -1 (not below 0)
       if (likedNow) count += 1;
       else count = Math.max(0, count - 1);
 
       localStorage.setItem(KEY_LIKED, likedNow ? '1' : '0');
       localStorage.setItem(KEY_COUNT, String(count));
-
       applyLikeState(likedNow, count);
+    });
+
+    // Copy card number
+    const cardNumberText = el('cardNumberText');
+    const copyBtn = el('copyBtn');
+    const cardNumberBox = el('cardNumberBox');
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+
+    async function copyToClipboard(text){
+      const clean = text.replace(/\s+/g,' ').trim();
+      try{
+        await navigator.clipboard.writeText(clean);
+        return true;
+      }catch(e){
+        // fallback
+        try{
+          const ta = document.createElement('textarea');
+          ta.value = clean;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          return true;
+        }catch(_){
+          return false;
+        }
+      }
+    }
+
+    async function handleCopy(){
+      const ok = await copyToClipboard(CARD_NUMBER);
+      copyBtn.classList.remove('ok');
+      void copyBtn.offsetWidth; // restart animation
+      copyBtn.classList.add('ok');
+      showToast(ok ? 'Скопировано ✅' : 'Не удалось скопировать ❌');
+    }
+
+    copyBtn.addEventListener('click', handleCopy);
+    cardNumberBox.addEventListener('click', (e) => {
+      // чтобы клик по кнопке не срабатывал дважды
+      if (e.target.closest('button')) return;
+      handleCopy();
     });
 
     // Init
     (function init(){
       const m = Math.max(0, Number(MONEY) || 0);
+      cardNumberText.textContent = CARD_NUMBER;
+
       animateNumber(m);
-      // delay bars a bit for cinematic feel
       setTimeout(() => updateBars(m), 120);
       loadLikes();
     })();
